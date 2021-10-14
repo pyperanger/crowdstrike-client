@@ -1,0 +1,3 @@
+*.toml
+dist/
+__pycache__/

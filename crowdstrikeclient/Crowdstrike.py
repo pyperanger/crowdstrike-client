@@ -19,6 +19,7 @@ class CrowdStrike(object):
             "accept": "application/json",
             "Authorization": "Bearer " + self.__jwt
         }
+        
     # HOST
     from ._CrowdstrikeHostandGroup import DevicesQueriesDevices
     from ._CrowdstrikeHostandGroup import DevicesEntitiesDevices
