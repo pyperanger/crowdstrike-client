@@ -5,14 +5,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="crowdstrike-client",
-    version="0.0.3",
+    version="0.0.4",
     author="Pyperanger",
-    description="A Non-oficial crowdstrike client api",
+    description="A Non-oficial crowdstrike client API",
     url="https://github.com/pyperanger/crowdstrike-client",
     project_urls={
         "Bug Tracker": "https://github.com/pyperanger/crowdstrike-client/issues",
     },
-    package_dir={"": "crowdstrikeclient"},
-    packages=setuptools.find_packages(where="crowdstrikeclient"),
+    packages=["crowdstrikeclient"],
+    install_requires=[
+        "requests"
+    ],
     python_requires=">=3.6",
 )
