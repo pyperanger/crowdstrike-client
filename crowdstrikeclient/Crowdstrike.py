@@ -21,16 +21,23 @@ class CrowdStrike(object):
         }
         
     # HOST
-    from ._CrowdstrikeHostandGroup import DevicesQueriesDevices
-    from ._CrowdstrikeHostandGroup import DevicesEntitiesDevices
-    from ._CrowdstrikeHostandGroup import DevicesCombinedDevicesLoginhistory
-    from ._CrowdstrikeHostandGroup import DevicesCombinedDevicesNetworkAddressHistory
+    from ._CrowdstrikeHost import DevicesQueriesDevices
+    from ._CrowdstrikeHost import DevicesEntitiesDevices
+    from ._CrowdstrikeHost import DevicesCombinedDevicesLoginhistory
+    from ._CrowdstrikeHost import DevicesCombinedDevicesNetworkAddressHistory
     # SENSOR
-    from ._CrowdstrikeHostandGroup import SensorsQueriesInstallersCcid
+    from ._CrowdstrikeSensor import SensorsQueriesInstallersCcid
     # MALQUERY
-    from ._CrowdstrikeHostandGroup import MalqueryEntitiesMetadata
+    from ._CrowdstrikeIntel import MalqueryEntitiesMetadata
     # IOC
-    from ._CrowdstrikeHostandGroup import IndicatorsQueriesDevices
+    from ._CrowdstrikeIoC import IndicatorsQueriesDevices
+    # Detects
+    from ._CrowdstrikeDetects import DetectsQueriesDetects
+    from ._CrowdstrikeDetects import DetectsEntitiesSummariesGET
+    from ._CrowdstrikeDetects import DetectsEntitiesDetects
+    # User Manegement
+    from ._CrowdstrikeUserMenagement import UsersEntitiesUsers
+    from ._CrowdstrikeUserMenagement import UsersQueriesUser_uuids_by_cid
 
     def GetToken(self):
         return self.__jwt
@@ -63,10 +70,23 @@ class CrowdStrike(object):
             return
         return req.text
 
+    def PatchAPI(self, path, payload):
+        headers = self.headers
+        headers.update({"Content-type": "application/json"})
+        req = requests.patch(self.endpoint + path, json=payload, headers=headers)
+        if req.status_code == 403:
+            print ("Forbidden, maybe Token or API have problem")
+            exit(1)
+        if req.status_code == 429 and "X-RateLimit-RetryAfter" in req.headers:
+            self.__ratelimit(req.headers["X-RateLimit-RetryAfter"])
+            self.PostAPI(payload)
+            return
+        return req.text
+
     def __ratelimit(self, RetryAfter):
         RetryAfterTimestamp = int(RetryAfter)
         TimestampUTC = int(datetime.datetime.utcnow().strftime("%s"))
-        #print ("Reached the X-RateLimit-RetryAfter:\t" + str(RetryAfter))
+        print ("Reached the X-RateLimit-RetryAfter:\t" + str(RetryAfter))
         sleep(RetryAfterTimestamp - TimestampUTC)
         
     def __createtoken(self):
@@ -100,3 +120,10 @@ class CrowdStrike(object):
         req = requests.post(self.endpoint + "oauth2/revoke", headers=headers, data=payloads)
         if req.status_code == 200:
             self.__jwt = None
+
+    def __custom_error(self, msg):
+        return {
+            "crowdstrikeclient" : {
+                "error": msg
+            }
+        }

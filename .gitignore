@@ -1,5 +1,7 @@
 # general things to ignore
 build/
+test*
+test/
 dist/
 *.egg-info/
 *.egg
