@@ -25,6 +25,7 @@ class CrowdStrike(object):
     from ._CrowdstrikeHost import DevicesEntitiesDevices
     from ._CrowdstrikeHost import DevicesCombinedDevicesLoginhistory
     from ._CrowdstrikeHost import DevicesCombinedDevicesNetworkAddressHistory
+    from ._CrowdstrikeHost import DevicesEntitiesDevicesActions
     # SENSOR
     from ._CrowdstrikeSensor import SensorsQueriesInstallersCcid
     # MALQUERY
@@ -38,6 +39,8 @@ class CrowdStrike(object):
     # User Manegement
     from ._CrowdstrikeUserMenagement import UsersEntitiesUsers
     from ._CrowdstrikeUserMenagement import UsersQueriesUser_uuids_by_cid
+    # RTR
+    from ._CrowdstrikeRTR import RealTimeResponseBatchInitSession
 
     def GetToken(self):
         return self.__jwt
