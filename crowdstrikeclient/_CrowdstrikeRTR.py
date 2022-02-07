@@ -1,5 +1,6 @@
 import json
 
+
 def RealTimeResponseBatchInitSession(self, ids, timeout=30, timeout_duration="30s", batch=None):
     '''/real-time-response/combined/batch-init-session/v1'''
     body = {
@@ -40,7 +41,6 @@ def RealTimeResponseQueriesSessions(self):
 def RealTimeResponseQueriesScripts(self):
     '''/real-time-response/queries/scripts/v1'''
     return json.loads(self.GetAPI("real-time-response/queries/scripts/v1"))
-    
 
 def RealTimeResponseEntitiesScripts(self, ids):
     '''/real-time-response/entities/scripts/v1'''
@@ -54,3 +54,30 @@ def RealTimeResponseEntitiesScripts(self, ids):
         return None
     print (payload)
     return json.loads(self.GetAPI("real-time-response/entities/scripts/v1?ids=" + payload))
+
+def RealTimeResponseEntitiesScriptsUpload(self, description, permission_type, name, f, content=None, platform=None):
+    '''/real-time-response/entities/scripts/v1'''
+    payload = {
+        "description": description,
+        "permission_type": permission_type,
+        "name": name,
+    }
+    if content:
+        payload["content"]=content
+    if platform:
+        payload["platform"]=platform
+    return json.loads(self.PostFileAPI("real-time-response/entities/scripts/v1", payload, f))
+
+def RealTimeResponseQueriesScripts(self):
+    '''/real-time-response/queries/scripts/v1'''
+    return json.loads(self.GetAPI("real-time-response/queries/scripts/v1"))
+
+def RealTimeResponseEntitiesScriptsDelete(self, ids):
+    '''/real-time-response/entities/scripts/v1'''
+    if type(ids) == str:
+        payload = ids
+    elif type(ids) == list:
+        payload = ids[0]
+        for id in ids[1:]:
+            payload += "&ids=" + id
+    return json.loads(self.DeleteAPI("real-time-response/entities/scripts/v1?ids=" + payload))

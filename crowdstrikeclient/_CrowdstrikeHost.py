@@ -1,9 +1,3 @@
-'''
-Custom Crowdstrike library
---------------------------
-Methods for API calls about Host
-https://assets.falcon.us-2.crowdstrike.com/support/api/swagger-us2.html#/hosts
-'''
 import json
 
 def DevicesQueriesDevices(self, query):

@@ -46,6 +46,8 @@ class CrowdStrike(object):
     from ._CrowdstrikeRTR import RealTimeResponseQueriesSessions
     from ._CrowdstrikeRTR import RealTimeResponseEntitiesScripts
     from ._CrowdstrikeRTR import RealTimeResponseQueriesScripts
+    from ._CrowdstrikeRTR import RealTimeResponseEntitiesScriptsUpload
+    from ._CrowdstrikeRTR import RealTimeResponseEntitiesScriptsDelete
     
     def GetToken(self):
         return self.__jwt
@@ -64,11 +66,36 @@ class CrowdStrike(object):
             self.GetAPI(path)
             return
         return req.text
-    
+
+    def DeleteAPI(self, path):
+        '''Is public for custom requests'''
+        req = requests.delete(self.endpoint + path, headers=self.headers)
+        if req.status_code == 403:
+            print ("Forbidden, maybe Token or API have problem")
+            exit(1)
+        if req.status_code == 429 and "X-RateLimit-RetryAfter" in req.headers:
+            self.__ratelimit(req.headers["X-RateLimit-RetryAfter"])
+            self.GetAPI(path)
+            return
+        return req.text    
+
     def PostAPI(self, path, payload):
         headers = self.headers
         headers.update({"Content-type": "application/json"})
         req = requests.post(self.endpoint + path, json=payload, headers=headers)
+        if req.status_code == 403:
+            print ("Forbidden, maybe Token or API have problem")
+            exit(1)
+        if req.status_code == 429 and "X-RateLimit-RetryAfter" in req.headers:
+            self.__ratelimit(req.headers["X-RateLimit-RetryAfter"])
+            self.PostAPI(payload)
+            return
+        return req.text
+
+    def PostFileAPI(self, path, payload, f):
+        headers = self.headers
+        # headers.update({"Content-type": "multipart/form-data"})
+        req = requests.post(self.endpoint + path, files=f, data=payload, headers=headers)
         if req.status_code == 403:
             print ("Forbidden, maybe Token or API have problem")
             exit(1)
