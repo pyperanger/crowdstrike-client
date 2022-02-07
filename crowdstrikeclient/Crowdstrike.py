@@ -41,7 +41,12 @@ class CrowdStrike(object):
     from ._CrowdstrikeUserMenagement import UsersQueriesUser_uuids_by_cid
     # RTR
     from ._CrowdstrikeRTR import RealTimeResponseBatchInitSession
-
+    from ._CrowdstrikeRTR import RealTimeResponseCombinedBatchRefreshSession
+    from ._CrowdstrikeRTR import RealTimeResponseCombinedBatchAdminCommand
+    from ._CrowdstrikeRTR import RealTimeResponseQueriesSessions
+    from ._CrowdstrikeRTR import RealTimeResponseEntitiesScripts
+    from ._CrowdstrikeRTR import RealTimeResponseQueriesScripts
+    
     def GetToken(self):
         return self.__jwt
 
