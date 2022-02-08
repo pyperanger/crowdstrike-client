@@ -48,7 +48,11 @@ class CrowdStrike(object):
     from ._CrowdstrikeRTR import RealTimeResponseQueriesScripts
     from ._CrowdstrikeRTR import RealTimeResponseEntitiesScriptsUpload
     from ._CrowdstrikeRTR import RealTimeResponseEntitiesScriptsDelete
-    
+    from ._CrowdstrikeRTR import RealTimeResponseQueriesPutFiles
+    from ._CrowdstrikeRTR import RealTimeResponseEntitiesPutFiles
+    from ._CrowdstrikeRTR import RealTimeResponseEntitiesPutFilesUpload
+    from ._CrowdstrikeRTR import RealTimeResponseEntitiesPutFilesDelete
+
     def GetToken(self):
         return self.__jwt
 
@@ -92,10 +96,14 @@ class CrowdStrike(object):
             return
         return req.text
 
-    def PostFileAPI(self, path, payload, f):
+    def PostFileAPI(self, path, payload, f=None):
         headers = self.headers
-        # headers.update({"Content-type": "multipart/form-data"})
-        req = requests.post(self.endpoint + path, files=f, data=payload, headers=headers)
+        if f:
+            req = requests.post(self.endpoint + path, files=f, data=payload, headers=headers)
+        else:
+            print ("aqui estou")
+            headers.update({"Content-type": "multipart/form-data"})
+            req = requests.post(self.endpoint + path, data=payload, headers=headers)
         if req.status_code == 403:
             print ("Forbidden, maybe Token or API have problem")
             exit(1)

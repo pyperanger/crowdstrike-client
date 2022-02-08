@@ -1,5 +1,6 @@
 import json
 
+## Session
 
 def RealTimeResponseBatchInitSession(self, ids, timeout=30, timeout_duration="30s", batch=None):
     '''/real-time-response/combined/batch-init-session/v1'''
@@ -38,6 +39,8 @@ def RealTimeResponseQueriesSessions(self):
     '''/real-time-response/queries/sessions/v1'''
     return json.loads(self.GetAPI("real-time-response/queries/sessions/v1"))
 
+## Scripts
+
 def RealTimeResponseQueriesScripts(self):
     '''/real-time-response/queries/scripts/v1'''
     return json.loads(self.GetAPI("real-time-response/queries/scripts/v1"))
@@ -55,7 +58,7 @@ def RealTimeResponseEntitiesScripts(self, ids):
     print (payload)
     return json.loads(self.GetAPI("real-time-response/entities/scripts/v1?ids=" + payload))
 
-def RealTimeResponseEntitiesScriptsUpload(self, description, permission_type, name, f, content=None, platform=None):
+def RealTimeResponseEntitiesScriptsUpload(self, description, name, permission_type, content, f=None, platform=None):
     '''/real-time-response/entities/scripts/v1'''
     payload = {
         "description": description,
@@ -66,6 +69,9 @@ def RealTimeResponseEntitiesScriptsUpload(self, description, permission_type, na
         payload["content"]=content
     if platform:
         payload["platform"]=platform
+    if f == None:
+        f = {name: ""}
+
     return json.loads(self.PostFileAPI("real-time-response/entities/scripts/v1", payload, f))
 
 def RealTimeResponseQueriesScripts(self):
@@ -81,3 +87,39 @@ def RealTimeResponseEntitiesScriptsDelete(self, ids):
         for id in ids[1:]:
             payload += "&ids=" + id
     return json.loads(self.DeleteAPI("real-time-response/entities/scripts/v1?ids=" + payload))
+
+## files
+def RealTimeResponseQueriesPutFiles(self):
+    '''/real-time-response/queries/put-files/v1'''
+    return json.loads(self.GetAPI("real-time-response/queries/put-files/v1"))
+
+def RealTimeResponseEntitiesPutFiles(self, ids):
+    '''/real-time-response/entities/put-files/v1'''
+    if type(ids) == str:
+        payload = ids
+    elif type(ids) == list:
+        payload = ids[0]
+        for id in ids[1:]:
+            payload += "&ids=" + id
+    else:
+        return None
+    print (payload)
+    return json.loads(self.GetAPI("real-time-response/entities/put-files/v1?ids=" + payload))
+
+def RealTimeResponseEntitiesPutFilesUpload(self, description, name, f):
+    '''/real-time-response/entities/put-files/v1'''
+    payload = {
+        "description": description,
+        "name": name,
+    }
+    return json.loads(self.PostFileAPI("real-time-response/entities/put-files/v1", payload, f))
+
+def RealTimeResponseEntitiesPutFilesDelete(self, ids):
+    '''/real-time-response/entities/put-files/v1'''
+    if type(ids) == str:
+        payload = ids
+    elif type(ids) == list:
+        payload = ids[0]
+        for id in ids[1:]:
+            payload += "&ids=" + id
+    return json.loads(self.DeleteAPI("real-time-response/entities/put-files/v1?ids=" + payload))
