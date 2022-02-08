@@ -55,10 +55,9 @@ def RealTimeResponseEntitiesScripts(self, ids):
             payload += "&ids=" + id
     else:
         return None
-    print (payload)
     return json.loads(self.GetAPI("real-time-response/entities/scripts/v1?ids=" + payload))
 
-def RealTimeResponseEntitiesScriptsUpload(self, description, name, permission_type, content, f=None, platform=None):
+def RealTimeResponseEntitiesScriptsUpload(self, description, name, permission_type, content, platform=None):
     '''/real-time-response/entities/scripts/v1'''
     payload = {
         "description": description,
@@ -69,10 +68,8 @@ def RealTimeResponseEntitiesScriptsUpload(self, description, name, permission_ty
         payload["content"]=content
     if platform:
         payload["platform"]=platform
-    if f == None:
-        f = {name: ""}
-
-    return json.loads(self.PostFileAPI("real-time-response/entities/scripts/v1", payload, f))
+    
+    return json.loads(self.PostFileAPI("real-time-response/entities/scripts/v1", payload))
 
 def RealTimeResponseQueriesScripts(self):
     '''/real-time-response/queries/scripts/v1'''
@@ -106,13 +103,15 @@ def RealTimeResponseEntitiesPutFiles(self, ids):
     print (payload)
     return json.loads(self.GetAPI("real-time-response/entities/put-files/v1?ids=" + payload))
 
-def RealTimeResponseEntitiesPutFilesUpload(self, description, name, f):
+def RealTimeResponseEntitiesPutFilesUpload(self, description, f, name=None):
     '''/real-time-response/entities/put-files/v1'''
     payload = {
-        "description": description,
-        "name": name,
+        "description": (None, description),
+        "file": f
     }
-    return json.loads(self.PostFileAPI("real-time-response/entities/put-files/v1", payload, f))
+    if name:
+        payload["name"] = (None, name)
+    return json.loads(self.PostFileAPI("real-time-response/entities/put-files/v1", payload))
 
 def RealTimeResponseEntitiesPutFilesDelete(self, ids):
     '''/real-time-response/entities/put-files/v1'''

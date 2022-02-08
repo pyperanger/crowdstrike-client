@@ -76,7 +76,7 @@ class CrowdStrike(object):
         req = requests.delete(self.endpoint + path, headers=self.headers)
         if req.status_code == 403:
             print ("Forbidden, maybe Token or API have problem")
-            exit(1)
+            return
         if req.status_code == 429 and "X-RateLimit-RetryAfter" in req.headers:
             self.__ratelimit(req.headers["X-RateLimit-RetryAfter"])
             self.GetAPI(path)
@@ -96,17 +96,16 @@ class CrowdStrike(object):
             return
         return req.text
 
-    def PostFileAPI(self, path, payload, f=None):
+    def PostFileAPI(self, path, payload):
         headers = self.headers
-        if f:
-            req = requests.post(self.endpoint + path, files=f, data=payload, headers=headers)
+        if "file" in payload:
+            req = requests.post(self.endpoint + path, files=payload, headers=headers)
         else:
-            print ("aqui estou")
-            headers.update({"Content-type": "multipart/form-data"})
+            headers.update({"Content-type": "multipart/form-data"})            
             req = requests.post(self.endpoint + path, data=payload, headers=headers)
         if req.status_code == 403:
             print ("Forbidden, maybe Token or API have problem")
-            exit(1)
+            return
         if req.status_code == 429 and "X-RateLimit-RetryAfter" in req.headers:
             self.__ratelimit(req.headers["X-RateLimit-RetryAfter"])
             self.PostAPI(payload)
